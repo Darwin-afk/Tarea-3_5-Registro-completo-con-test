@@ -13,15 +13,9 @@ namespace RegistroCompleto.BLL.Tests
         [TestMethod()]
         public void GuardarTest()
         {
-            Personas persona = new Personas();
-            persona.PersonaId = 0;
-            persona.Nombre = "Jose";
-            persona.Telefono = "123";
-            persona.Cedula = "321";
-            persona.Direccion = "qwe";
-            persona.FechaNacimiento = DateTime.Now;
-            persona.Balance = 0;
-            PersonasBLL.Guardar(persona);
+            Personas persona = PersonasBLL.Buscar(1);
+
+            int balanceAnterior = persona.Balance;
 
             Inscripciones inscripcion = new Inscripciones();
             inscripcion.InscripcionId = 0;
@@ -34,25 +28,26 @@ namespace RegistroCompleto.BLL.Tests
 
             persona = PersonasBLL.Buscar(1);
 
-            Assert.IsTrue(persona.Balance==2600);
+            Assert.IsTrue(persona.Balance==(balanceAnterior + 2600));
         }
 
         [TestMethod()]
         public void ModificarTest()
         {
-            Inscripciones inscripcion = new Inscripciones();
-            inscripcion.InscripcionId = 11;
-            inscripcion.Fecha = DateTime.Now;
-            inscripcion.PersonaId = 20;
-            inscripcion.Comentarios = "Primer pago";
-            inscripcion.Balance = 2600;
-            inscripcion.Monto = 400;
+            Personas persona = PersonasBLL.Buscar(1);
+
+            int balanceAnterior = persona.Balance;
+            int pago = 400;
+
+            Inscripciones inscripcion = InscripcionesBLL.Buscar(1);
+            inscripcion.Monto += pago;
+
 
             InscripcionesBLL.Modificar(inscripcion);
 
-            Personas persona = PersonasBLL.Buscar(20);
+            persona = PersonasBLL.Buscar(1);
 
-            Assert.IsTrue(persona.Balance == (2600 - inscripcion.Monto));
+            Assert.IsTrue(persona.Balance == (balanceAnterior - pago));
         }
 
         [TestMethod()]
